@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Simple Form Example</title>
+    <link href="favicon.ico" rel="icon" type="image/x-icon">
+    <link href="css/notoserifkr.css" rel="stylesheet">
+    <link href="css/blackhansans.css" rel="stylesheet">
+    <link href="css/common.css" rel="stylesheet">
+    <script src="js/form.js"></script>
+</head>
+<body>
+    <h1>
+        Haechi WAS / 1.0
+        <img class="logo" src="image/tomcat.svg">
+    </h1>
+
+    <form method="POST" action="submit.html">
+        <p class="id">
+            <label>아이디</label>
+            <input type="text" name="id" id="id">
+            <span class="error"></span>
+        </p>
+        <p>
+            <label>이름</label>
+            <input type="text" name="name">
+        </p>
+        <p>
+            <label>성별</label>
+            <input type="radio" name="gender" value="male" checked> 남성
+            <input type="radio" name="gender" value="female"> 여성
+        </p>
+        <p>
+            <label>취미</label>
+            <input type="checkbox" name="hobby" value="reading"> 독서
+            <input type="checkbox" name="hobby" value="game"> 게임
+            <input type="checkbox" name="hobby" value="exercise"> 운동
+        </p>
+        <p>
+            <label>설명</label><br>
+            <textarea name="desc"></textarea>
+        </p>
+        <p class="align-center">
+            <input type="submit" value="제출">
+        </p>
+    </form>
+</body>
+</html>
