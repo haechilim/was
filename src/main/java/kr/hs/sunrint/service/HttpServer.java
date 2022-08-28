@@ -1,20 +1,24 @@
 package kr.hs.sunrint.service;
 
-import kr.hs.sunrint.domain.MimeType;
+import kr.hs.sunrint.domain.HttpRequest;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.URL;
+
+import static kr.hs.sunrint.domain.HttpResponseCode.OK;
+import static kr.hs.sunrint.domain.HttpResponseCode.NOT_FOUND;
 
 public class HttpServer {
-    private int responseCode = 200;
     private String contentsType = "text/html";
 
+    private HttpStreamReader streamReader;
     private HttpStreamWriter streamWriter;
     private FileLoader fileLoader;
 
     public HttpServer() {
+        streamReader = new HttpStreamReader();
         streamWriter = new HttpStreamWriter();
         fileLoader = new FileLoader();
     }
@@ -27,32 +31,19 @@ public class HttpServer {
 
             while (true) {
                 Socket socket = serverSocket.accept();
+                HttpRequest request = streamReader.read(socket.getInputStream());
 
-                //HttpRequest request = streamReader.get();
-                //File file = fileLoader.getFile(socket.getInputStream(), request.getPath());
-                File file = fileLoader.getFile(socket.getInputStream(), getPath(socket.getInputStream()));
+                System.out.println(request.getMethod().name() + " " + request.getPath() + " " + request.getBody());
 
-                if(file != null) streamWriter.write(socket.getOutputStream(), file, responseCode, contentsType);
-                else streamWriter.write(socket.getOutputStream(), 404);
+                File file = fileLoader.getFile(socket.getInputStream(), request.getPath());
+
+                if(file != null) streamWriter.write(socket.getOutputStream(), file, OK, contentsType);
+                else streamWriter.write(socket.getOutputStream(), NOT_FOUND);
+
                 socket.close();
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    private String getPath(InputStream inputStream) {
-        String startLine = HttpStreamReader.getStartLine(inputStream);
-
-        if(startLine != null) {
-            String[] str = startLine.split(" ");
-
-            if (str.length >= 2) {
-                if(str[1].contains(".")) contentsType = MimeType.getContentsType(str[1].split("\\.")[1]);
-                return str[1];
-            }
-        }
-
-        return "";
     }
 }

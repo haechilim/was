@@ -1,4 +1,4 @@
-package kr.hs.sunrint.server;
+package kr.hs.sunrint;
 
 import kr.hs.sunrint.service.HttpServer;
 

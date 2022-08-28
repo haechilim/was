@@ -9,6 +9,7 @@ import java.net.URL;
 public class FileLoader {
     public File getFile(InputStream inputStream, String path) {
         URL url = getClass().getResource("/static" + path);
+
         return url != null ? new File(url.getFile()) : null;
     }
 
@@ -37,7 +38,7 @@ public class FileLoader {
         return new File(url.getFile());
     }
 
-    public static String getPath(InputStream inputStream, String contentsType) {
+    /*public static String getPath(InputStream inputStream, String contentsType) {
         String startLine = HttpStreamReader.getStartLine(inputStream);
 
         if(startLine != null) {
@@ -50,5 +51,5 @@ public class FileLoader {
         }
 
         return "";
-    }
+    }*/
 }
