@@ -7,6 +7,26 @@ import java.io.InputStream;
 import java.net.URL;
 
 public class FileLoader {
+    public File getFile(InputStream inputStream, String path) {
+        URL url = getClass().getResource("/static" + path);
+        return url != null ? new File(url.getFile()) : null;
+    }
+
+    /*private String getPath(InputStream inputStream) {
+        String startLine = HttpStreamReader.getStartLine(inputStream);
+
+        if(startLine != null) {
+            String[] str = startLine.split(" ");
+
+            if (str.length >= 2) {
+                if(str[1].contains(".")) contentsType = MimeType.getContentsType(str[1].split("\\.")[1]);
+                return str[1];
+            }
+        }
+
+        return "";
+    }*/
+
     private static File getFile(String name, URL url, String responseCode, String contentsType) {
         if(url == null) {
             responseCode = "404";

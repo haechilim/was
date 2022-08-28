@@ -8,19 +8,32 @@ import java.net.Socket;
 import java.net.URL;
 
 public class HttpServer {
-    private String responseCode = "200";
+    private int responseCode = 200;
     private String contentsType = "text/html";
+
+    private HttpStreamWriter streamWriter;
+    private FileLoader fileLoader;
+
+    public HttpServer() {
+        streamWriter = new HttpStreamWriter();
+        fileLoader = new FileLoader();
+    }
 
     public void start() {
         try {
             ServerSocket serverSocket = new ServerSocket(9000);
 
+            System.out.println("Server is listening...");
+
             while (true) {
                 Socket socket = serverSocket.accept();
 
-                File file = getFile("/static" + getPath(socket.getInputStream()));
+                //HttpRequest request = streamReader.get();
+                //File file = fileLoader.getFile(socket.getInputStream(), request.getPath());
+                File file = fileLoader.getFile(socket.getInputStream(), getPath(socket.getInputStream()));
 
-                HttpStreamWriter.write(socket, file, responseCode, contentsType);
+                if(file != null) streamWriter.write(socket.getOutputStream(), file, responseCode, contentsType);
+                else streamWriter.write(socket.getOutputStream(), 404);
                 socket.close();
             }
         } catch (IOException e) {
@@ -41,17 +54,5 @@ public class HttpServer {
         }
 
         return "";
-    }
-
-    private File getFile(String name) {
-        URL url = getClass().getResource(name);
-
-        if(url == null) {
-            responseCode = "404";
-            return null;
-        }
-
-        responseCode = "200";
-        return new File(url.getFile());
     }
 }

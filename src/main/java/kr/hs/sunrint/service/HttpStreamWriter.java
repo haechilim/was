@@ -4,27 +4,37 @@ import java.io.*;
 import java.net.Socket;
 
 public class HttpStreamWriter {
-    public static void write(Socket socket, File file, String responseCode, String contentsType) {
+    public void write(OutputStream outputStream, int responseCode) {
+        write(outputStream, responseCode, null, null);
+    }
+
+    public void write(OutputStream outputStream, File file, int responseCode, String contentsType) {
         try {
-            OutputStream outputStream = socket.getOutputStream();
-            DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
-
-            dataOutputStream.writeBytes("HTTP/1.1 " + responseCode + " OK \r\n");
-            dataOutputStream.writeBytes("Content-Type: " + contentsType + "\r\n");
-            dataOutputStream.writeBytes("\r\n");
-
             if(file != null) {
-                int fileLength = (int) file.length();
-                byte[] bytes = new byte[fileLength];
+                int length = (int) file.length();
+                byte[] bytes = new byte[length];
 
                 FileInputStream fileInputStream = new FileInputStream(file);
                 fileInputStream.read(bytes);
                 fileInputStream.close();
 
-                dataOutputStream.write(bytes, 0, fileLength);
+                write(outputStream, responseCode, contentsType, bytes);
             }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
-            dataOutputStream.flush();
+    private void write(OutputStream outputStream, int responseCode, String contentsType, byte[] contents) {
+        try {
+            DataOutputStream stream = new DataOutputStream(outputStream);
+
+            stream.writeBytes("HTTP/1.1 " + responseCode + " OK \r\n");
+            if(contentsType != null) stream.writeBytes("Content-Type: " + contentsType + "\r\n");
+            stream.writeBytes("\r\n");
+            if(contents != null) stream.write(contents);
+
+            stream.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }
