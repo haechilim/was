@@ -9,10 +9,12 @@ public class HttpRequest {
     private String filename;
     private String extension;
     private Map<String, String> headers;
+    private Map<String, String> parameters;
     private String body;
 
     public HttpRequest() {
         headers = new HashMap<String, String>();
+        parameters = new HashMap<String, String>();
         body = "";
     }
 
@@ -56,6 +58,14 @@ public class HttpRequest {
         this.headers = headers;
     }
 
+    public Map<String, String> getParameters() {
+        return parameters;
+    }
+
+    public void setParameters(Map<String, String> parameters) {
+        this.parameters = parameters;
+    }
+
     public void addHeader(String key, String value) {
         headers.put(key, value);
     }
@@ -80,6 +90,7 @@ public class HttpRequest {
                 ", filename='" + filename + '\'' +
                 ", extension='" + extension + '\'' +
                 ", headers=" + headers +
+                ", parameters=" + parameters +
                 ", body='" + body + '\'' +
                 '}';
     }

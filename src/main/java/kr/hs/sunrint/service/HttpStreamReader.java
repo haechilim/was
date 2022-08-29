@@ -5,6 +5,8 @@ import kr.hs.sunrint.domain.HttpMethod;
 import kr.hs.sunrint.domain.HttpRequest;
 
 import java.io.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class HttpStreamReader {
     public HttpStreamReader() {}
@@ -47,6 +49,7 @@ public class HttpStreamReader {
 
             request.setMethod(getMethod(startLines));
             request.setPath(getPath(startLines));
+            request.setParameters(getParameter(startLines));
 
             String path = getPath(startLines);
 
@@ -79,7 +82,7 @@ public class HttpStreamReader {
 
             byte[] content = new byte[contentLength];
 
-             stream.read(content, 0, contentLength);
+            stream.read(content, 0, contentLength);
 
             request.setBody(new String(content));
         } catch (IOException e) {
@@ -96,7 +99,28 @@ public class HttpStreamReader {
     private String getPath(String[] elements) {
         if(elements.length <= 1) return null;
 
-        return elements[1];
+        String url = elements[1];
+
+        return url.contains("?") ? url.split("\\?")[0] : url;
+    }
+
+    private Map<String, String> getParameter(String[] elements) {
+        Map<String, String> hashMap = new HashMap<>();
+
+        if(elements.length <= 1) return null;
+
+        String url = elements[1];
+        String parameter = url.contains("?") ? url.split("\\?")[1] : "";
+
+        if(parameter.isEmpty()) return null;
+
+        String[] parameters = parameter.split("&");
+
+        for(int i = 0; i < parameters.length; i++) {
+            hashMap.put(parameters[i].split("=")[0], parameters[i].split("=")[1]);
+        }
+
+        return hashMap;
     }
 
     private String getFilename(String path) {
