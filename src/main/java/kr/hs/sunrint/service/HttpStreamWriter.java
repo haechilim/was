@@ -13,10 +13,9 @@ public class HttpStreamWriter {
     public void write(OutputStream outputStream, File file, HttpResponseCode responseCode, String contentsType) {
         try {
             if(file != null) {
-                int length = (int) file.length();
-                byte[] bytes = new byte[length];
-
                 FileInputStream fileInputStream = new FileInputStream(file);
+                byte[] bytes = new byte[(int) file.length()];
+
                 fileInputStream.read(bytes);
                 fileInputStream.close();
 
@@ -27,11 +26,11 @@ public class HttpStreamWriter {
         }
     }
 
-    private void write(OutputStream outputStream, HttpResponseCode responseCode, String contentsType, byte[] contents) {
+    public void write(OutputStream outputStream, HttpResponseCode responseCode, String contentsType, byte[] contents) {
         try {
             DataOutputStream stream = new DataOutputStream(outputStream);
 
-            stream.writeBytes("HTTP/1.1 " + responseCode.getCode() + " OK \r\n");
+            stream.writeBytes("HTTP/1.1 " + responseCode.getCode() + " " + responseCode.name() + " \r\n");
             if(contentsType != null) stream.writeBytes("Content-Type: " + contentsType + "\r\n");
             stream.writeBytes("\r\n");
             if(contents != null) stream.write(contents);

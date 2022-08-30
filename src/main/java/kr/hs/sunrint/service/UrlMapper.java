@@ -2,6 +2,7 @@ package kr.hs.sunrint.service;
 
 import kr.hs.sunrint.domain.HttpRequest;
 
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,11 +17,11 @@ public class UrlMapper {
         return urlMap.containsKey(url);
     }
 
-    public void runHandler(HttpRequest request, HttpStreamWriter streamWriter) {
-        urlMap.get(request.getPath()).handle(request, streamWriter);
+    public void runHandler(HttpRequest request, OutputStream outputStream) {
+        urlMap.get(request.getPath()).handle(request, outputStream);
     }
 
     public interface Handler {
-        void handle(HttpRequest request, HttpStreamWriter streamWriter);
+        void handle(HttpRequest request, OutputStream outputStream);
     }
 }

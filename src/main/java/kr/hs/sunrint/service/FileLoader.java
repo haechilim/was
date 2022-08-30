@@ -1,32 +1,32 @@
 package kr.hs.sunrint.service;
 
-import kr.hs.sunrint.domain.MimeType;
-
-import java.io.File;
-import java.io.InputStream;
+import java.io.*;
 import java.net.URL;
 
 public class FileLoader {
-    public File getFile(InputStream inputStream, String path) {
-        URL url = getClass().getResource("/static" + path);
+    public File getFile(String path) {
+        URL url = getUrl(path);
 
         return url != null ? new File(url.getFile()) : null;
     }
 
-    /*private String getPath(InputStream inputStream) {
-        String startLine = HttpStreamReader.getStartLine(inputStream);
+    public String getFileToString(File file) {
+        try {
+            FileInputStream stream = new FileInputStream(file);
+            int length = (int) file.length();
+            byte[] bytes = new byte[length];
 
-        if(startLine != null) {
-            String[] str = startLine.split(" ");
+            stream.read(bytes, 0, length);
 
-            if (str.length >= 2) {
-                if(str[1].contains(".")) contentsType = MimeType.getContentsType(str[1].split("\\.")[1]);
-                return str[1];
-            }
+            return new String(bytes);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
-        return "";
-    }*/
+        return null;
+    }
 
     private static File getFile(String name, URL url, String responseCode, String contentsType) {
         if(url == null) {
@@ -38,18 +38,7 @@ public class FileLoader {
         return new File(url.getFile());
     }
 
-    /*public static String getPath(InputStream inputStream, String contentsType) {
-        String startLine = HttpStreamReader.getStartLine(inputStream);
-
-        if(startLine != null) {
-            String[] str = startLine.split(" ");
-
-            if (str.length >= 2) {
-                if(str[1].contains(".")) contentsType = MimeType.getContentsType(str[1].split("\\.")[1]);
-                return str[1];
-            }
-        }
-
-        return "";
-    }*/
+    private URL getUrl(String path) {
+        return getClass().getResource("/static" + path);
+    }
 }

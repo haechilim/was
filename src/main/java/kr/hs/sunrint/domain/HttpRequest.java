@@ -58,8 +58,10 @@ public class HttpRequest {
         this.headers = headers;
     }
 
-    public Map<String, String> getParameters() {
-        return parameters;
+    public String getParameter(String key) {
+        if(!parameters.containsKey(key)) return "";
+
+        return parameters.get(key);
     }
 
     public void setParameters(Map<String, String> parameters) {
